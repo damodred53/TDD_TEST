@@ -1,33 +1,32 @@
 package fr.formation.Projet_Grp_Java.api;
 
 import fr.formation.Projet_Grp_Java.model.Utilisateur;
-import fr.formation.Projet_Grp_Java.repo.UtilisateurRepository;
+import fr.formation.Projet_Grp_Java.service.UtilisateurService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+@ExtendWith(MockitoExtension.class)
 class UtilisateurControllerTest {
 
     @Mock
-    private UtilisateurRepository utilisateurRepository;
+    private UtilisateurService utilisateurService;
 
     @InjectMocks
     private UtilisateurController utilisateurController;
 
     private Utilisateur utilisateur;
+    private Utilisateur utilisateur2;
 
     @BeforeEach
     void setUp() {
@@ -37,13 +36,24 @@ class UtilisateurControllerTest {
         utilisateur.setPrenom("Jean");
         utilisateur.setDateDeNaissance(LocalDate.of(1990, 5, 15));
         utilisateur.setCivilite("M.");
+
+        utilisateur2 = new Utilisateur();
+        utilisateur2.setId("2");
+        utilisateur2.setNom("Dupon2");
+        utilisateur2.setPrenom("Jea2");
+        utilisateur2.setDateDeNaissance(LocalDate.of(1990, 5, 15));
+        utilisateur2.setCivilite("M.");
     }
 
     @Test
     void testGetAllUtilisateurs() {
-        List<Utilisateur> utilisateurs = Arrays.asList(utilisateur);
-        when(utilisateurRepository.findAll()).thenReturn(utilisateurs);
-        ResponseEntity<List<Utilisateur>> response = utilisateurController.getAllUtilisateurs();
-        assertEquals(utilisateurs, response.getBody());
+
+        List<Utilisateur> utilisateurs = Arrays.asList(utilisateur, utilisateur2);
+        when(utilisateurService.getAllUtilisateurs()).thenReturn(utilisateurs);
+
+        List<Utilisateur> result = utilisateurService.getAllUtilisateurs();
+
+        assertEquals(2, result.size());
+        assertEquals("Dupont", result.get(0).getNom());
     }
 }
