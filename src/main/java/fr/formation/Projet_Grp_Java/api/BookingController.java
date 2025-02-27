@@ -3,6 +3,9 @@ package fr.formation.Projet_Grp_Java.api;
 import fr.formation.Projet_Grp_Java.model.Booking;
 import fr.formation.Projet_Grp_Java.repo.BookingRepository;
 import fr.formation.Projet_Grp_Java.service.BookingService;
+import fr.formation.Projet_Grp_Java.service.EmailServiceMock;
+import fr.formation.Projet_Grp_Java.service.UtilisateurService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +17,21 @@ import java.util.List;
 @RequestMapping("/bookings")
 public class BookingController {
 
-    @Autowired
-    private BookingService bookingService;
+    private final BookingService bookingService;
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
+
+    private final UtilisateurService utilisateurService;
+
+    private final EmailServiceMock emailServiceMock;
+
+    public BookingController(BookingService bookingService, BookingRepository bookingRepository,
+            UtilisateurService utilisateurService, EmailServiceMock emailServiceMock) {
+        this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
+        this.utilisateurService = utilisateurService;
+        this.emailServiceMock = emailServiceMock;
+    }
 
     @PostMapping("/reminders")
     public ResponseEntity<String> sendOverdueReminders() {
@@ -29,15 +42,9 @@ public class BookingController {
             return ResponseEntity.ok("Aucune réservation en retard.");
         }
 
-        expiredBookings.forEach(booking -> sendMockEmail(booking));
+        expiredBookings.forEach(booking -> emailServiceMock.sendMockEmail(booking));
 
         return ResponseEntity.ok("Rappels envoyés à " + expiredBookings.size() + " utilisateur(s).");
-    }
-
-    private void sendMockEmail(Booking booking) {
-        System.out.println("Envoi d'un mail à : " + booking.getUtilisateur().getNom() +
-                " pour livre : " + booking.getBook().getTitle() +
-                " (Date limite max : " + booking.getDueDate() + ")");
     }
 
     @PostMapping("/create/{userId}/{bookId}")
