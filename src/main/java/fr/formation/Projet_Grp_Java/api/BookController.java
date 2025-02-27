@@ -44,12 +44,20 @@ public class BookController {
         // Partie concernant les recherches filtrées.
         @GetMapping("/search/isbn/{isbn}")
         public List<Book> getBooksByIsbn(@PathVariable String isbn) {
-                return bookRepository.findByIsbn(isbn);
+                // return bookRepository.findByIsbn(isbn);
+                List<Book> allBooks = bookRepository.findAll();
+                return allBooks.stream()
+                                .filter(book -> book.getIsbn().equalsIgnoreCase(isbn))
+                                .collect(Collectors.toList());
         }
 
         @GetMapping("/search/title/{title}")
         public List<Book> getBooksByTitle(@PathVariable String title) {
-                return bookRepository.findByTitleContainingIgnoreCase(title);
+                List<Book> allBooks = bookRepository.findAll();
+                return allBooks.stream()
+                                .filter(book -> book.getTitle().equalsIgnoreCase(title))
+                                .collect(Collectors.toList());
+                // return bookRepository.findByTitleContainingIgnoreCase(title);
         }
 
         @GetMapping("/search/author/{author}")
