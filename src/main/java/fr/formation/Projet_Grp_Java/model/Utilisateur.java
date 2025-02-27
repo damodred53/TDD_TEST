@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,9 +36,6 @@ public class Utilisateur {
 
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Booking> reservations;
+    private List<Booking> reservations = new ArrayList<>();
 
-    public boolean canReserve() {
-        return reservations.stream().filter(res -> !res.isEnded()).count() < 3;
-    }
 }

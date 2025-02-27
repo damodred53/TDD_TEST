@@ -6,7 +6,6 @@ import fr.formation.Projet_Grp_Java.service.BookingService;
 import fr.formation.Projet_Grp_Java.service.EmailServiceMock;
 import fr.formation.Projet_Grp_Java.service.UtilisateurService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,15 +20,12 @@ public class BookingController {
 
     private final BookingRepository bookingRepository;
 
-    private final UtilisateurService utilisateurService;
-
     private final EmailServiceMock emailServiceMock;
 
     public BookingController(BookingService bookingService, BookingRepository bookingRepository,
             UtilisateurService utilisateurService, EmailServiceMock emailServiceMock) {
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
-        this.utilisateurService = utilisateurService;
         this.emailServiceMock = emailServiceMock;
     }
 
