@@ -5,6 +5,7 @@ import fr.formation.Projet_Grp_Java.exception.InvalidIsbnLengthException;
 import fr.formation.Projet_Grp_Java.model.Book;
 import fr.formation.Projet_Grp_Java.model.BookFormat;
 import fr.formation.Projet_Grp_Java.repo.BookRepository;
+import fr.formation.Projet_Grp_Java.service.BookService;
 import fr.formation.Projet_Grp_Java.service.IsbnValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,11 @@ public class BookController {
 
         private final BookRepository bookRepository;
 
-        public BookController(BookRepository bookRepository) {
-                System.out.println(" BookController chargé !");
+        private final BookService bookService;
+
+        public BookController(BookRepository bookRepository, BookService bookService) {
                 this.bookRepository = bookRepository;
+                this.bookService = bookService;
         }
 
         @GetMapping
@@ -44,28 +47,18 @@ public class BookController {
         // Partie concernant les recherches filtrées.
         @GetMapping("/search/isbn/{isbn}")
         public List<Book> getBooksByIsbn(@PathVariable String isbn) {
-                // return bookRepository.findByIsbn(isbn);
-                List<Book> allBooks = bookRepository.findAll();
-                return allBooks.stream()
-                                .filter(book -> book.getIsbn().equalsIgnoreCase(isbn))
-                                .collect(Collectors.toList());
+                return bookService.getBooksByIsbn(isbn);
+
         }
 
         @GetMapping("/search/title/{title}")
         public List<Book> getBooksByTitle(@PathVariable String title) {
-                List<Book> allBooks = bookRepository.findAll();
-                return allBooks.stream()
-                                .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                                .collect(Collectors.toList());
-                // return bookRepository.findByTitleContainingIgnoreCase(title);
+                return bookService.getBooksByTitle(title);
         }
 
         @GetMapping("/search/author/{author}")
         public List<Book> getBooksByAuthor(@PathVariable String author) {
-                List<Book> allBooks = bookRepository.findAll();
-                return allBooks.stream()
-                                .filter(book -> book.getAuthor().equalsIgnoreCase(author))
-                                .collect(Collectors.toList());
+                return bookService.getBooksByAuthor(author);
         }
 
         @PostMapping
