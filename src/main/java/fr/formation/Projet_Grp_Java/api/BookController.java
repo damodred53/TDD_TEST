@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
@@ -53,7 +54,10 @@ public class BookController {
 
         @GetMapping("/search/author/{author}")
         public List<Book> getBooksByAuthor(@PathVariable String author) {
-                return bookRepository.findByAuthorContainingIgnoreCase(author);
+                List<Book> allBooks = bookRepository.findAll();
+                return allBooks.stream()
+                                .filter(book -> book.getAuthor().equalsIgnoreCase(author))
+                                .collect(Collectors.toList());
         }
 
         @PostMapping
