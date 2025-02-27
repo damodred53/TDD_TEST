@@ -56,4 +56,37 @@ class UtilisateurControllerTest {
         assertEquals(2, result.size());
         assertEquals("Dupont", result.get(0).getNom());
     }
+
+    @Test
+    void testGetUtilisateurById() {
+        when(utilisateurService.getUtilisateurById("1")).thenReturn(java.util.Optional.of(utilisateur));
+
+        assertEquals("Dupont", utilisateurService.getUtilisateurById("1").get().getNom());
+    }
+
+    @Test
+    void createUtilisateurs() {
+        when(utilisateurService.createUtilisateur(utilisateur)).thenReturn(utilisateur);
+
+        assertEquals("Dupont", utilisateurService.createUtilisateur(utilisateur).getNom());
+        assertEquals("Jean", utilisateurService.createUtilisateur(utilisateur).getPrenom());
+        assertEquals("M.", utilisateurService.createUtilisateur(utilisateur).getCivilite());
+    }
+
+    @Test
+    void updateUtilisateurs() {
+
+        when(utilisateurService.updateUtilisateur("1", utilisateur2)).thenReturn(java.util.Optional.of(utilisateur2));
+
+        assertEquals("Dupon2", utilisateurService.updateUtilisateur("1", utilisateur2).get().getNom());
+        assertEquals("Jea2", utilisateurService.updateUtilisateur("1", utilisateur2).get().getPrenom());
+        assertEquals("M.", utilisateurService.updateUtilisateur("1", utilisateur2).get().getCivilite());
+    }
+
+    @Test
+    void deleteUtilisateur() {
+        when(utilisateurService.deleteUtilisateur("1")).thenReturn(true);
+
+        assertEquals(true, utilisateurService.deleteUtilisateur("1"));
+    }
 }
