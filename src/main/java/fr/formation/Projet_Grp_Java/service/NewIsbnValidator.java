@@ -1,8 +1,11 @@
 package fr.formation.Projet_Grp_Java.service;
 
+import org.springframework.stereotype.Component;
+
 import fr.formation.Projet_Grp_Java.exception.InvalidIsbnCharacterException;
 import fr.formation.Projet_Grp_Java.exception.InvalidIsbnLengthException;
 
+@Component
 public class NewIsbnValidator {
 
     public boolean validateNewIsbn(String isbn) {
@@ -18,5 +21,4 @@ public class NewIsbnValidator {
         }
         return total % 10 == 0;
     }
-
 }

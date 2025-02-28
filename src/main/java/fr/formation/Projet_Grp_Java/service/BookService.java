@@ -35,14 +35,14 @@ public class BookService {
             } catch (InvalidIsbnLengthException | InvalidIsbnCharacterException e) {
                 throw new IllegalArgumentException("Invalid ISBN");
             }
-        }
-
-        try {
-            if (!isbnValidator.validateIsbn(book.getIsbn())) {
-                return null;
+        } else {
+            try {
+                if (!isbnValidator.validateIsbn(book.getIsbn())) {
+                    return null;
+                }
+            } catch (InvalidIsbnLengthException | InvalidIsbnCharacterException e) {
+                throw new IllegalArgumentException("Invalid ISBN");
             }
-        } catch (InvalidIsbnLengthException | InvalidIsbnCharacterException e) {
-            throw new IllegalArgumentException("Invalid ISBN");
         }
 
         book.setTitle(mockIfNullWebService(book.getTitle()));
