@@ -27,6 +27,8 @@ public class BookService {
 
     public Book createBook(@RequestBody Book book) {
 
+        book.setIsbn(deleteBareIsbn(book.getIsbn()));
+
         if (book.getIsbn() != null && book.getIsbn().length() == 13) {
             try {
                 if (!newIsbnValidator.validateNewIsbn(book.getIsbn())) {
@@ -79,5 +81,9 @@ public class BookService {
 
     public BookFormat mockFormatIfNullWebService(BookFormat value) {
         return (value == null) ? BROCHE : value;
+    }
+
+    public String deleteBareIsbn(String isbn) {
+        return isbn.replaceAll("[^0-9X]", "");
     }
 }
