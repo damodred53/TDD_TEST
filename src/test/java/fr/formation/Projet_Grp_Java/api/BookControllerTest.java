@@ -17,7 +17,12 @@ import fr.formation.Projet_Grp_Java.service.BookService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BookControllerTest {
@@ -89,8 +94,6 @@ public class BookControllerTest {
         bookTest2.setFormat(POCHE);
         bookTest2.setAvailable(true);
 
-        List<Book> books = Arrays.asList(bookTest1, bookTest2);
-
         // WHEN :
 
         when(bookRepository.findById("1")).thenReturn(Optional.of(bookTest1));
@@ -156,7 +159,6 @@ public class BookControllerTest {
         bookTest3.setFormat(POCHE);
         bookTest3.setAvailable(false);
 
-        List<Book> books = Arrays.asList(bookTest1, bookTest2, bookTest3);
         List<Book> expectedBooks = Arrays.asList(bookTest1);
 
         // WHEN :
@@ -248,7 +250,6 @@ public class BookControllerTest {
         bookTest3.setFormat(POCHE);
         bookTest3.setAvailable(false);
 
-        List<Book> books = Arrays.asList(bookTest1, bookTest2, bookTest3);
         List<Book> expectedBookGoodIsbn = Arrays.asList(bookTest1);
 
         when(bookService.getBooksByIsbn("2070405370")).thenReturn(expectedBookGoodIsbn);
@@ -263,4 +264,84 @@ public class BookControllerTest {
 
     }
 
+    @Test
+    void createBookWithCompleteData() {
+        Book bookTest1 = new Book();
+        bookTest1.setId("1");
+        bookTest1.setIsbn("2070405370");
+        bookTest1.setTitle("Le Comte de Monte-Cristo");
+        bookTest1.setAuthor("Alexandre Dumas");
+        bookTest1.setPublisher("Le Livre de Poche");
+        bookTest1.setFormat(POCHE);
+        bookTest1.setAvailable(true);
+
+        // WHEN :
+        // J appelle deux fois la méthode createBook de mon service donc l'asseertion
+        // compte deux appels
+        when(bookService.createBook(bookTest1)).thenReturn(bookTest1);
+
+        Book result = bookService.createBook(bookTest1);
+
+        // THEN :
+        assertEquals(bookTest1, bookController.createBook(bookTest1));
+        assertNotNull(result);
+        assertEquals(bookTest1, result);
+        verify(bookService, times(2)).createBook(any(Book.class));
+
+    }
+
+    @Test
+    void createBookWithIncompleteData() {
+
+        Book bookTest2 = new Book();
+        bookTest2.setId("2");
+        bookTest2.setIsbn("INVALID_ISBN"); // ISBN invalide ici
+        bookTest2.setTitle("Le Comte de Monte-Cristo");
+        bookTest2.setAuthor("Alexandre Dumas");
+        bookTest2.setPublisher("Le Livre de Poche");
+        bookTest2.setFormat(POCHE);
+        bookTest2.setAvailable(true);
+
+        when(bookService.createBook(bookTest2)).thenReturn(null);
+
+        // WHEN
+        Book result = bookController.createBook(bookTest2);
+
+        // THEN
+        assertNull(result);
+        verify(bookService, times(1)).createBook(any(Book.class));
+    }
+
+    @Test
+    void createBookWithNullFields() {
+
+        Book bookTest3 = new Book();
+        bookTest3.setId("3");
+        bookTest3.setIsbn("2070405370");
+        bookTest3.setTitle(null);
+        bookTest3.setAuthor(null);
+        bookTest3.setPublisher(null);
+        bookTest3.setFormat(null);
+
+        Book expectedBook = new Book();
+        expectedBook.setId("3");
+        expectedBook.setIsbn("2070405370");
+        expectedBook.setTitle("test");
+        expectedBook.setAuthor("test");
+        expectedBook.setPublisher("test");
+        expectedBook.setFormat(BookFormat.BROCHE); // C'est la valeur que je mets par défaut
+
+        when(bookService.createBook(any(Book.class))).thenReturn(expectedBook);
+
+        // WHEN
+        Book result = bookController.createBook(bookTest3);
+
+        // THEN
+        assertNotNull(result);
+        assertEquals("test", result.getTitle());
+        assertEquals("test", result.getAuthor());
+        assertEquals("test", result.getPublisher());
+        assertEquals(BookFormat.BROCHE, result.getFormat());
+        verify(bookService, times(1)).createBook(any(Book.class));
+    }
 }

@@ -1,27 +1,18 @@
 package fr.formation.Projet_Grp_Java.api;
 
-import fr.formation.Projet_Grp_Java.exception.InvalidIsbnCharacterException;
-import fr.formation.Projet_Grp_Java.exception.InvalidIsbnLengthException;
 import fr.formation.Projet_Grp_Java.model.Book;
-import fr.formation.Projet_Grp_Java.model.BookFormat;
 import fr.formation.Projet_Grp_Java.repo.BookRepository;
 import fr.formation.Projet_Grp_Java.service.BookService;
-import fr.formation.Projet_Grp_Java.service.IsbnValidator;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
 public class BookController {
-
-        @Autowired
-        private IsbnValidator isbnValidator;
 
         private final BookRepository bookRepository;
 
@@ -62,21 +53,8 @@ public class BookController {
         }
 
         @PostMapping
-        public ResponseEntity<Book> createBook(@RequestBody Book book) {
-                try {
-                        if (!isbnValidator.validateIsbn(book.getIsbn())) {
-                                return ResponseEntity.badRequest().body(null);
-                        }
-                } catch (InvalidIsbnLengthException | InvalidIsbnCharacterException e) {
-                        return ResponseEntity.badRequest().body(null);
-                }
-
-                book.setTitle(mockIfNullWebService(book.getTitle()));
-                book.setAuthor(mockIfNullWebService(book.getAuthor()));
-                book.setPublisher(mockIfNullWebService(book.getPublisher()));
-                book.setFormat(mockFormatIfNullWebService(book.getFormat()));
-
-                return ResponseEntity.ok(bookRepository.save(book));
+        public Book createBook(@RequestBody Book book) {
+                return bookService.createBook(book);
         }
 
         @PutMapping("/{id}")
@@ -108,13 +86,4 @@ public class BookController {
                 }
         }
 
-        private String mockIfNullWebService(String value) {
-                return (value == null || value.trim().isEmpty()) ? "test" : value;
-        }
-
-        private static final BookFormat BROCHE = BookFormat.BROCHE;
-
-        private BookFormat mockFormatIfNullWebService(BookFormat value) {
-                return (value == null) ? BROCHE : value;
-        }
 }

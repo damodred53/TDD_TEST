@@ -1,6 +1,5 @@
 package fr.formation.Projet_Grp_Java.api;
 
-import fr.formation.Projet_Grp_Java.model.Booking;
 import fr.formation.Projet_Grp_Java.model.Utilisateur;
 import fr.formation.Projet_Grp_Java.service.UtilisateurService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

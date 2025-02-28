@@ -11,47 +11,47 @@ public class IsbnValidatorTest {
 
     @Test
     public void whenIsbnIsValid_shouldReturnTrue() {
-        // Given
+
         IsbnValidator validator = new IsbnValidator();
-        // When
+        // WHEN
         boolean result = validator.validateIsbn("2253009687");
-        // Should
+        // THEN
         assertTrue(result);
     }
 
     @Test
     public void whenIsbnIsInvalid_shouldReturnFalse() {
-        // Given
+
         IsbnValidator validator = new IsbnValidator();
-        // When
+        // WHEN
         boolean result = validator.validateIsbn("2253009684");
-        // Should
+        // THEN
         assertFalse(result);
     }
 
     @Test
     public void whenIsbnIs9Chars_shouldThrowInvalidLengthException() {
-        // Given
+
         IsbnValidator validator = new IsbnValidator();
-        // Should
+        // WHEN
         assertThrows(InvalidIsbnLengthException.class, () -> validator.validateIsbn("225300968"));
     }
 
     @Test
     public void whenIsbnIsValidAndEndsWithX_shouldReturnTrue() {
-        // Given
+
         IsbnValidator validator = new IsbnValidator();
-        // When
+        // WHEN
         boolean result = validator.validateIsbn("140274577X");
-        // Should
+        // THEN
         assertTrue(result);
     }
 
     @Test
     public void whenIsbnHasInvalidChar_shouldThrowException() {
-        // Given
+
         IsbnValidator validator = new IsbnValidator();
-        // When
+        // WHEN
         assertThrows(InvalidIsbnCharacterException.class, () -> validator.validateIsbn("14ze74577X"));
     }
 

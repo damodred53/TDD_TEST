@@ -34,6 +34,8 @@ class EmailServiceMockTest {
     private BookingController bookingController;
 
     private Booking booking;
+    private Booking booking2;
+    private Booking booking3;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +49,16 @@ class EmailServiceMockTest {
         booking.setUtilisateur(utilisateur);
         booking.setBook(book);
         booking.setDueDate(LocalDate.now().minusDays(1));
+
+        booking2 = new Booking();
+        booking2.setUtilisateur(utilisateur);
+        booking2.setBook(book);
+        booking2.setDueDate(LocalDate.now().minusDays(1));
+
+        booking3 = new Booking();
+        booking3.setUtilisateur(utilisateur);
+        booking3.setBook(book);
+        booking3.setDueDate(LocalDate.now().minusDays(1));
     }
 
     @Test
@@ -67,6 +79,17 @@ class EmailServiceMockTest {
         ResponseEntity<String> response = bookingController.sendOverdueReminders();
 
         assertEquals("Rappels envoyés à 1 utilisateur(s).", response.getBody());
+
+    }
+
+    @Test
+    void testSendOverdueReminders_ReservationsEnRetardToThreeUsers() {
+        when(bookingRepository.findByDueDateBeforeAndIsEndedFalse(any()))
+                .thenReturn(List.of(booking, booking2, booking3));
+
+        ResponseEntity<String> response = bookingController.sendOverdueReminders();
+
+        assertEquals("Rappels envoyés à 3 utilisateur(s).", response.getBody());
 
     }
 

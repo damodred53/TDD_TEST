@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -126,5 +127,32 @@ class BookingServiceTest {
         });
 
         assertEquals("Livre non trouvé", exception.getMessage());
+    }
+
+    @Test
+    void getAllBookings() {
+        // GIVEN
+        Utilisateur utilisateur = new Utilisateur();
+
+        utilisateur = new Utilisateur();
+        utilisateur.setId("user123");
+
+        Booking booking = new Booking();
+        booking = new Booking();
+        booking.setUtilisateur(utilisateur);
+        booking.setEnded(false);
+
+        Booking booking2 = new Booking();
+        booking2 = new Booking();
+        booking2.setUtilisateur(utilisateur);
+        booking2.setEnded(false);
+
+        // WHEN
+        when(bookingRepository.findAll()).thenReturn(List.of(booking, booking2));
+
+        // THEN
+        bookingService.getAllBookings();
+
+        assertEquals(2, bookingRepository.findAll().size());
     }
 }
